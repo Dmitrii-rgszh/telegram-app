@@ -14,7 +14,7 @@ async def send_message_periodically():
             print("Сообщение отправлено!")
         except Exception as e:
             print("Ошибка при отправке сообщения:", e)
-        await asyncio.sleep(60)
+        await asyncio.sleep(600)
 
 async def main():
     # Запускаем периодическую задачу
