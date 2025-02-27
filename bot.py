@@ -2,7 +2,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler
-from aiohttp import web
+from aiohttp import web, ClientSession
 
 # Конфигурация
 TOKEN = "7699973329:AAF1h3N8FuL0y8yhzu2zMU7bV28ZEdb0kJs"  # ваш токен
@@ -17,7 +17,7 @@ WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Обработчик команды /start (пример) с использованием фильтра Command
+# Обработчик команды /start с использованием фильтра Command
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer("Привет! Я работаю на вебхуках.")
@@ -31,10 +31,24 @@ async def send_message_periodically():
             pass
         await asyncio.sleep(600)  # 600 секунд = 10 минут
 
+# Функция для пинга вебхука каждую минуту
+async def ping_service():
+    async with ClientSession() as session:
+        while True:
+            try:
+                async with session.get(WEBHOOK_URL) as response:
+                    # Можно проверить response.status, если нужно
+                    pass
+            except Exception:
+                pass
+            await asyncio.sleep(60)  # Пинг каждые 60 секунд
+
 # Функция запуска приложения aiohttp
 async def on_startup(app: web.Application):
     await bot.set_webhook(WEBHOOK_URL)
+    # Запускаем периодические задачи: отправку сообщений и пинг сервиса
     asyncio.create_task(send_message_periodically())
+    asyncio.create_task(ping_service())
 
 # Функция остановки приложения
 async def on_shutdown(app: web.Application):
@@ -49,4 +63,5 @@ app.on_shutdown.append(on_shutdown)
 
 if __name__ == "__main__":
     web.run_app(app, host="0.0.0.0", port=8443)
+
 
