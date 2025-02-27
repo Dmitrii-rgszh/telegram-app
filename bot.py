@@ -26,14 +26,13 @@ async def send_message_periodically():
     while True:
         try:
             await bot.send_message(chat_id=CHANNEL_ID, text="Привет")
-        except Exception as e:
+        except Exception:
+            pass
         await asyncio.sleep(600)  # 600 секунд = 10 минут
 
 # Функция запуска приложения aiohttp
 async def on_startup(app: web.Application):
-    # Устанавливаем вебхук
     await bot.set_webhook(WEBHOOK_URL)
-    # Запускаем периодическую задачу
     asyncio.create_task(send_message_periodically())
 
 # Функция остановки приложения
@@ -48,5 +47,5 @@ app.on_startup.append(on_startup)
 app.on_shutdown.append(on_shutdown)
 
 if __name__ == "__main__":
-    # Запускаем сервер на порту 8443 (можно изменить, если требуется)
     web.run_app(app, host="0.0.0.0", port=8443)
+
