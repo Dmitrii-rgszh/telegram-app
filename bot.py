@@ -1,5 +1,6 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 from aiohttp import web
 
@@ -16,10 +17,10 @@ WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Обработчик команды /start (пример)
-@dp.message_handler(commands=["start"])
+# Обработчик команды /start (пример) с использованием фильтра Command
+@dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.reply("Привет! Я работаю на вебхуках.")
+    await message.answer("Привет! Я работаю на вебхуках.")
 
 # Периодическая отправка сообщений в канал
 async def send_message_periodically():
