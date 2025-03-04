@@ -116,7 +116,7 @@ async def report_scheduler():
             await send_daily_report()
         if now.weekday() == 0 and now.hour == 10 and now.minute == 0:
             await send_weekly_report()
-        await asyncio.sleep(60)
+        await asyncio.sleep(5)
 
 
 # Функция запуска приложения
